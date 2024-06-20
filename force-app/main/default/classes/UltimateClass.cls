@@ -6,7 +6,6 @@ public with sharing class UltimateClass {
             b = 'great';
         }
 
-        
         System.debug('Value of '+ a);
     }
 }
