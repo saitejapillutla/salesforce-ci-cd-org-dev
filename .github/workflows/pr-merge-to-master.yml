@@ -4,14 +4,11 @@ name: Deploy PR on develop branch
 # Definition when the workflow should run
 on:
     # The workflow will run whenever an event happens on a pull request
-    pull_request:
+    push:
       # The events are that a PR is opened, or when a commit is pushed
       # to a branch that has an existing pull request
-      types: [opened, synchronize, reopened]
       # The branches filter allows to specify that this workflow should only
-      # run if the branch name is "develop". This way we prevent this workflow
-      # from running when PRs are opened on other branches
-      branches: [ master, devolopment ]
+      branches: [ master ]
       # We only care about changes to the force-app directory, which is the
       # root directory of the sfdx project. This prevents the job from running
       # when changing non-salesforce files (like this yml file).
