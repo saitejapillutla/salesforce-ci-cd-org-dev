@@ -189,5 +189,3 @@ jobs:
               run: |
                   sf project deploy validate -d force-app --manifest --test-level RunLocalTests
 
-            - name: 'Deploy destructive changes (if any)'
-              run: sfdx force:mdapi:deploy -d "force-app/destructiveChanges" --checkonly --ignorewarnings 
