@@ -158,11 +158,11 @@ jobs:
             # The .sarif file can later be uploaded to github, so that we can see the 
             # results of the scan directly from the PR.
 
-            # - name: 'Scan code'
-            #   run: |
-            #       cd changed-sources
-            #       sfdx scanner:run --format sarif --target './**/*.cls' --category "Design,Best Practices,Performance" --outfile 'apexScanResults.sarif'  
-            #       cd ..
+            - name: 'Scan code'
+              run: |
+                  cd changed-sources
+                  sfdx scanner:run --format sarif --target './**/*.cls' --category "Design,Best Practices,Performance" --outfile 'apexScanResults.sarif'  
+                  cd ..
 
             # Now we upload the .sarif file as explained in the previous step
             - name: Upload SARIF file
@@ -174,17 +174,17 @@ jobs:
             # If the env variable does not equal 'all', we know that there is a list of
             # tests that can be run
 
-            # - name: 'Check-only deploy delta changes - run specified tests'
-            #   if: ${{ env.APEX_TESTS != 'all' }}
-            #   run: |
-            #       echo ${{env.APEX_TESTS}}
-            #       sfdx force:source:deploy -p "changed-sources/force-app" --checkonly --testlevel RunSpecifiedTests --runtests ${{env.APEX_TESTS}} --json
+            - name: 'Check-only deploy delta changes - run specified tests'
+              if: ${{ env.APEX_TESTS != 'all' }}
+              run: |
+                  echo ${{env.APEX_TESTS}}
+                  sfdx force:source:deploy -p "changed-sources/force-app" --checkonly --testlevel RunSpecifiedTests --runtests ${{env.APEX_TESTS}} --json
 
-            # # If the env variable equals all, we run all tests
-            # - name: 'Check-only deploy delta changes - run all tests'
-            #   if: ${{ env.APEX_TESTS == 'all' }}
-            #   run: |
-            #       sfdx force:source:deploy -p "changed-sources/force-app" --checkonly --testlevel RunLocalTests  --json
+            # If the env variable equals all, we run all tests
+            - name: 'Check-only deploy delta changes - run all tests'
+              if: ${{ env.APEX_TESTS == 'all' }}
+              run: |
+                  sfdx force:source:deploy -p "changed-sources/force-app" --checkonly --testlevel RunLocalTests  --json
 
-            # - name: 'Deploy destructive changes (if any)'
-            #   run: sfdx force:mdapi:deploy -d "changed-sources/destructiveChanges" --checkonly --ignorewarnings 
+            - name: 'Deploy destructive changes (if any)'
+              run: sfdx force:mdapi:deploy -d "changed-sources/destructiveChanges" --checkonly --ignorewarnings 
