@@ -173,18 +173,21 @@ jobs:
             # We do a check-only deploy and we only run the tests specified in the PR
             # If the env variable does not equal 'all', we know that there is a list of
             # tests that can be run
+            # sfdx force:source:deploy -p force-app --checkonly --testlevel RunSpecifiedTests --runtests ${{env.APEX_TESTS}} --json
+            # sfdx force:source:deploy -p force-app --checkonly --testlevel RunSpecifiedTests --runtests ${{env.APEX_TESTS}} --json
 
             - name: 'Check-only deploy delta changes - run specified tests'
               if: ${{ env.APEX_TESTS != 'all' }}
               run: |
                   echo ${{env.APEX_TESTS}}
-                  sfdx force:source:deploy -p force-app --checkonly --testlevel RunSpecifiedTests --runtests ${{env.APEX_TESTS}} --json
+                  sf project deploy validate -x manifest/package.xml -l RunSpecifiedTests -t ${{env.APEX_TESTS}}
 
             # If the env variable equals all, we run all tests
+            # sfdx force:source:deploy -p force-app --checkonly --testlevel RunLocalTests  --json
             - name: 'Check-only deploy delta changes - run all tests'
               if: ${{ env.APEX_TESTS == 'all' }}
               run: |
-                  sfdx force:source:deploy -p force-app --checkonly --testlevel RunLocalTests  --json
+                  sf project deploy validate -d force-app --manifest --test-level RunLocalTests
 
             - name: 'Deploy destructive changes (if any)'
               run: sfdx force:mdapi:deploy -d "force-app/destructiveChanges" --checkonly --ignorewarnings 
