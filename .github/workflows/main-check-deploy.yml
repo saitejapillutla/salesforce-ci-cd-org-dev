@@ -177,9 +177,9 @@ jobs:
             # sfdx force:source:deploy -p force-app --checkonly --testlevel RunSpecifiedTests --runtests ${{env.APEX_TESTS}} --json
             # sfdx force:source:deploy -p force-app --checkonly --testlevel RunSpecifiedTests --runtests ${{env.APEX_TESTS}} --json
             #sf project deploy validate --manifest "manifest/package.xml" -l RunSpecifiedTests -t ${{env.APEX_TESTS}} --verbose --concise
-            - name: 'Detploy from source Org'
-              run: |
-                  sf project deploy validate -d force-app --test-level RunSpecifiedTests -t ChangePasswordControllerTest --concise
+            # - name: 'Detploy from source Org'
+            #   run: |
+            #       sf project deploy validate -d force-app --test-level RunSpecifiedTests -t ChangePasswordControllerTest --concise
 
             - name: 'Deploy with manifest'
               run: |
