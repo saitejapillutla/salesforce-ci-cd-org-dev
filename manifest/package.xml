@@ -5,6 +5,13 @@
         <members>ChangePasswordControllerTest</members>
         <name>ApexClass</name>
     </types>
+
+    
+    <types>
+        <members>hero</members>
+        <name>LightningComponentBundle</name>
+    </types>
+
     <!--
     <types>
         <members>*</members>
