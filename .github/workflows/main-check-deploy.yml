@@ -181,7 +181,7 @@ jobs:
               run: |
                   echo ${{env.APEX_TESTS}}
                   echo sf project deploy validate --manifest -l RunSpecifiedTests -t
-                  sf project deploy validate --manifest -l RunSpecifiedTests -t ${{env.APEX_TESTS}} --verbose 
+                  sf project deploy validate --manifest --metadata-dir force-app  -l RunSpecifiedTests -t ${{env.APEX_TESTS}} --verbose 
 
             # If the env variable equals all, we run all tests
             # sfdx force:source:deploy -p force-app --checkonly --testlevel RunLocalTests  --json
