@@ -183,7 +183,7 @@ jobs:
 
             - name: 'Deploy with manifest'
               run: |
-                  sf project deploy validate --manifest "manifest/package.xml" -l RunSpecifiedTests -t  --concise
+                  sf project deploy validate --manifest "manifest/package.xml" -l RunSpecifiedTests -t ChangePasswordControllerTest --concise
 
 
             # - name: 'Check-only deploy delta changes - run specified tests'
