@@ -176,7 +176,6 @@ jobs:
             #   run: |
             #       sfdx force:source:deploy -p force-app -c --verbose
 
-                  
 
             # We do a check-only deploy and we only run the tests specified in the PR
             # If the env variable does not equal 'all', we know that there is a list of
