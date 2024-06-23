@@ -174,7 +174,7 @@ jobs:
 
             - name: 'Detploy from source Org'
               run: |
-                  sf project deploy validate -d force-app --test-level RunSpecifiedTests -t ${{env.APEX_TESTS}} --concise
+                  sfdx force:source:deploy --manifest "manifest/package.xml" --postdestructivechanges "manifest/destructiveChangesPost.xml" -c -l NoTestRun --verbose
 
                   
 
