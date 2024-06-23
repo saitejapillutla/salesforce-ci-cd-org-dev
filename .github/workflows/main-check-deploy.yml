@@ -172,9 +172,9 @@ jobs:
             #   with:
             #     sarif_file: force-app/apexScanResults.sarif
 
-            - name: 'Detploy from source Org'
-              run: |
-                  sfdx force:source:deploy -p force-app -c --verbose
+            # - name: 'Detploy from source Org'
+            #   run: |
+            #       sfdx force:source:deploy -p force-app -c --verbose
 
                   
 
