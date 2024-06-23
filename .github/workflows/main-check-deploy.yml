@@ -19,7 +19,6 @@ on:
         - 'force-app/**'
         - 'manifest/**'
             
-
 # Jobs to be executed when the above conditions are met
 jobs:
     # This is the name of the job. You can give it whatever name you want
