@@ -192,8 +192,9 @@ jobs:
               if: ${{ env.APEX_TESTS != 'all' }}
               run: |
                   echo Tests that are about to Run during validation are :: ${{env.APEX_TESTS}}
-                  sf project deploy validate --manifest "manifest/package.xml" --post-destructive-changes "manifest/destructiveChangesPost.xml" -l RunSpecifiedTests -t ${{env.APEX_TESTS}} --verbose
-
+                  sfdx force:source:deploy --manifest "manifest/package.xml" --postdestructivechanges "manifest/destructiveChangesPost.xml" -c -l RunSpecifiedTests -t ${{env.APEX_TESTS}} --verbose
+            # sf project deploy validate --manifest "manifest/package.xml" --post-destructive-changes "manifest/destructiveChangesPost.xml" -l RunSpecifiedTests -t ${{env.APEX_TESTS}} --verbose
+                  
             # # If the env variable equals all, we run all tests
             # sfdx force:source:deploy -p force-app --checkonly --testlevel RunLocalTests  --json
             - name: 'Check-only deploy delta changes - run all tests'
