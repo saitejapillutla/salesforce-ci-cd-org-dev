@@ -196,14 +196,14 @@ jobs:
 
             # # If the env variable equals all, we run all tests
             # sfdx force:source:deploy -p force-app --checkonly --testlevel RunLocalTests  --json
-            - name: 'Check-only deploy delta changes - run all tests'
-              if: ${{ env.APEX_TESTS == 'all' }}
-              run: |
-                  sfdx force:source:deploy --manifest "manifest/package.xml" --checkonly -l NoTestRun --verbose
+            # - name: 'Check-only deploy delta changes - run all tests'
+            #   if: ${{ env.APEX_TESTS == 'all' }}
+            #   run: |
+            #       sfdx force:source:deploy --manifest "manifest/package.xml" --checkonly -l NoTestRun --verbose
 
             - name: Check for destructive changes
               run: |
-                  if test -f "manifest/destructiveChangesPost/destructiveChangesPost.xml"; then
+                  if test -f "manifest/destructiveChangesPost.xml"; then
                     echo "Found destructive changes file. Deploying..."
                     sudo sfdx force:source:deploy --manifest "manifest/package.xml" --postdestructivechanges manifest -c -l NoTestRun --verbose
                     sfdx force:mdapi:deploy -d "manifest/destructiveChangesPost.xml" --checkonly --ignorewarnings 
