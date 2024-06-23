@@ -173,6 +173,7 @@ jobs:
             #   with:
             #     sarif_file: force-app/apexScanResults.sarif
 
+            
             # We do a check-only deploy and we only run the tests specified in the PR
             # If the env variable does not equal 'all', we know that there is a list of
             # tests that can be run
