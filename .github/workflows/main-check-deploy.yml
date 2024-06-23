@@ -183,9 +183,9 @@ jobs:
             #   run: |
             #       sf project deploy validate -d force-app --test-level RunSpecifiedTests -t ChangePasswordControllerTest --concise
 
-            - name: 'Deploy with manifest'
-              run: |
-                  sf project deploy validate --manifest "manifest/package.xml" -l RunSpecifiedTests -t ${{env.APEX_TESTS}} --concise
+            # - name: 'Deploy with manifest'
+            #   run: |
+            #       sf project deploy validate --manifest "manifest/package.xml" -l RunSpecifiedTests -t ${{env.APEX_TESTS}} --concise
 
 
             - name: 'Check-only deploy delta changes - run specified tests'
