@@ -174,7 +174,7 @@ jobs:
 
             - name: 'Detploy from source Org'
               run: |
-                  sfdx force:source:deploy --manifest "manifest/package.xml" --postdestructivechanges "manifest/destructiveChangesPost.xml" -c -l NoTestRun --verbose
+                  sfdx force:source:deploy -d force-app --postdestructivechanges "manifest/destructiveChangesPost.xml" -c -l NoTestRun --verbose
 
                   
 
