@@ -203,7 +203,7 @@ jobs:
 
             - name: Check for destructive changes
               run: |
-                  if test -f "manifest/destructiveChangesPost.xml"; then
+                  if test -f "manifest/destructiveChangesPost/destructiveChangesPost.xml"; then
                     echo "Found destructive changes file. Deploying..."
                     sfdx force:source:deploy --manifest "manifest/package.xml" --postdestructivechanges "manifest/destructiveChangesPost" -c -l NoTestRun --verbose
                     sfdx force:mdapi:deploy -d "manifest/destructiveChangesPost.xml" --checkonly --ignorewarnings 
