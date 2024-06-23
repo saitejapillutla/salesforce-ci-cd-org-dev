@@ -199,6 +199,5 @@ jobs:
             - name: 'Check-only deploy delta changes - run all tests'
               if: ${{ env.APEX_TESTS == 'all' }}
               run: |
-                  sf project deploy validate  -l RunLocalTests --verbose
                   sfdx force:source:deploy --manifest "manifest/package.xml" --checkonly --testlevel RunLocalTests --verbose
 
