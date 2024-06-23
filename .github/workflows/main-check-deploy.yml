@@ -176,18 +176,6 @@ jobs:
             # We do a check-only deploy and we only run the tests specified in the PR
             # If the env variable does not equal 'all', we know that there is a list of
             # tests that can be run
-            # sfdx force:source:deploy -p force-app --checkonly --testlevel RunSpecifiedTests --runtests ${{env.APEX_TESTS}} --json
-            # sfdx force:source:deploy -p force-app --checkonly --testlevel RunSpecifiedTests --runtests ${{env.APEX_TESTS}} --json
-            #sf project deploy validate --manifest "manifest/package.xml" -l RunSpecifiedTests -t ${{env.APEX_TESTS}} --verbose --concise
-            # - name: 'Detploy from source Org'
-            #   run: |
-            #       sf project deploy validate -d force-app --test-level RunSpecifiedTests -t ChangePasswordControllerTest --concise
-
-            # - name: 'Deploy with manifest'
-            #   run: |
-            #       sf project deploy validate --manifest "manifest/package.xml" -l RunSpecifiedTests -t ${{env.APEX_TESTS}} --concise
-
-
             - name: 'Check-only deploy delta changes - run specified tests'
               if: ${{ env.APEX_TESTS != 'all' }}
               run: |
@@ -196,23 +184,10 @@ jobs:
             # sf project deploy validate --manifest "manifest/package.xml" --post-destructive-changes "manifest/destructiveChangesPost.xml" -l RunSpecifiedTests -t ${{env.APEX_TESTS}} --verbose
                   
             # # If the env variable equals all, we run all tests
-            # sfdx force:source:deploy -p force-app --checkonly --testlevel RunLocalTests  --json
             - name: 'Check-only deploy delta changes - run all tests'
               if: ${{ env.APEX_TESTS == 'all' }}
               run: |
                   sfdx force:source:deploy --manifest "manifest/package.xml" --postdestructivechanges "manifest/destructiveChangesPost.xml" -c -l NoTestRun --verbose
-                  
-            # - name: Check for destructive changes
-            #   run: |
-            #       sfdx force:source:deploy --manifest "manifest/package.xml" --postdestructivechanges "manifest/destructiveChangesPost.xml" -c -l NoTestRun --verbose
-            #       if test -f "manifest/djkestructiveChangesPost.xml"; then
-            #         echo "Found destructive changes file. Deploying..."
-                    
-            #         sfdx force:source:deploy --manifest "manifest/package.xml" --postdestructivechanges "manifest/destructiveChangesPost.xml" -c -l NoTestRun --verbose
-            #         sfdx force:mdapi:deploy -d "manifest/destructiveChangesPost.xml" --checkonly --ignorewarnings 
-            #       else
-            #         echo "No destructive changes file found."
-            #         echo " Deploying as usual."
-                    
+
             #       fi
 
