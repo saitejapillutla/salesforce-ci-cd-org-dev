@@ -11,7 +11,7 @@ on:
       # The branches filter allows to specify that this workflow should only
       # run if the branch name is "develop". This way we prevent this workflow
       # from running when PRs are opened on other branches
-      branches: [ devolopment, deplotest ]
+      branches: [ deplotest ]
       # We only care about changes to the force-app directory, which is the
       # root directory of the sfdx project. This prevents the job from running
       # when changing non-salesforce files (like this yml file).
@@ -192,7 +192,7 @@ jobs:
               if: ${{ env.APEX_TESTS != 'all' }}
               run: |
                   echo Tests that are about to Run during validation are :: ${{env.APEX_TESTS}}
-                  sf project deploy validate --manifest "manifest/package.xml" -l RunSpecifiedTests -t ${{env.APEX_TESTS}} --verbose
+                  sf project deploy validate --manifest "manifest/package.xml" --post-destructive-changes "manifest/destructiveChangesPost.xml" -l RunSpecifiedTests -t ${{env.APEX_TESTS}} --verbose
 
             # # If the env variable equals all, we run all tests
             # sfdx force:source:deploy -p force-app --checkonly --testlevel RunLocalTests  --json
