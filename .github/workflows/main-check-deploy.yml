@@ -163,7 +163,7 @@ jobs:
             - name: 'Scan code'
               run: |
                   cd force-app
-                  sfdx scanner:run --format sarif --target './**/*.cls' --category "Design,Best Practices,Performance" -f junit  
+                  sf scanner run --format sarif --target './**/*.cls' --category "Design,Best Practices,Performance" -f junit  
                   cd ..
                   echo came back to root directory
 
