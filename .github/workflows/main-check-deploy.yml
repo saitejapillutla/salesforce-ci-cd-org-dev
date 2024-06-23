@@ -196,22 +196,22 @@ jobs:
 
             # # If the env variable equals all, we run all tests
             # sfdx force:source:deploy -p force-app --checkonly --testlevel RunLocalTests  --json
-            # - name: 'Check-only deploy delta changes - run all tests'
-            #   if: ${{ env.APEX_TESTS == 'all' }}
-            #   run: |
-            #       sfdx force:source:deploy --manifest "manifest/package.xml" --checkonly -l NoTestRun --verbose
-
-            - name: Check for destructive changes
+            - name: 'Check-only deploy delta changes - run all tests'
+              if: ${{ env.APEX_TESTS == 'all' }}
               run: |
                   sfdx force:source:deploy --manifest "manifest/package.xml" --postdestructivechanges "manifest/destructiveChangesPost.xml" -c -l NoTestRun --verbose
-                  if test -f "manifest/djkestructiveChangesPost.xml"; then
-                    echo "Found destructive changes file. Deploying..."
+                  
+            # - name: Check for destructive changes
+            #   run: |
+            #       sfdx force:source:deploy --manifest "manifest/package.xml" --postdestructivechanges "manifest/destructiveChangesPost.xml" -c -l NoTestRun --verbose
+            #       if test -f "manifest/djkestructiveChangesPost.xml"; then
+            #         echo "Found destructive changes file. Deploying..."
                     
-                    sfdx force:source:deploy --manifest "manifest/package.xml" --postdestructivechanges "manifest/destructiveChangesPost.xml" -c -l NoTestRun --verbose
-                    sfdx force:mdapi:deploy -d "manifest/destructiveChangesPost.xml" --checkonly --ignorewarnings 
-                  else
-                    echo "No destructive changes file found."
-                    echo " Deploying as usual."
+            #         sfdx force:source:deploy --manifest "manifest/package.xml" --postdestructivechanges "manifest/destructiveChangesPost.xml" -c -l NoTestRun --verbose
+            #         sfdx force:mdapi:deploy -d "manifest/destructiveChangesPost.xml" --checkonly --ignorewarnings 
+            #       else
+            #         echo "No destructive changes file found."
+            #         echo " Deploying as usual."
                     
-                  fi
+            #       fi
 
