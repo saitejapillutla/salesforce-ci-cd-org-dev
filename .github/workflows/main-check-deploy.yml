@@ -199,5 +199,6 @@ jobs:
             - name: 'Check-only deploy delta changes - run all tests'
               if: ${{ env.APEX_TESTS == 'all' }}
               run: |
-                  sfdx force:mdapi:deploy --manifest "manifest/package.xml" -c -l NoTestRun --verbose
+                  sf project deploy validate --manifest "manifest/destructiveChangesPost.xml"
+                  sfdx force:source:deploy --manifest "manifest/package.xml" --checkonly -l NoTestRun --verbose
 
