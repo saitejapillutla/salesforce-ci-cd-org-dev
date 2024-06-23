@@ -17,6 +17,7 @@ on:
       # when changing non-salesforce files (like this yml file).
       paths:
         - 'force-app/**'
+        - 'manifest/**'
             
 
 # Jobs to be executed when the above conditions are met
