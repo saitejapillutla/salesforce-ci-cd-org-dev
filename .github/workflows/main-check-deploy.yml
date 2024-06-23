@@ -188,16 +188,16 @@ jobs:
                   sf project deploy validate --manifest "manifest/package.xml" -l RunSpecifiedTests -t ${{env.APEX_TESTS}} --concise
 
 
-            # - name: 'Check-only deploy delta changes - run specified tests'
-            #   if: ${{ env.APEX_TESTS != 'all' }}
-            #   run: |
-            #       echo ${{env.APEX_TESTS}}
-            #       sf project deploy validate --manifest "manifest/package.xml" -l NoTestRun --concise
+            - name: 'Check-only deploy delta changes - run specified tests'
+              if: ${{ env.APEX_TESTS != 'all' }}
+              run: |
+                  echo ${{env.APEX_TESTS}}
+                  sf project deploy validate --manifest "manifest/package.xml" -l RunSpecifiedTests -t ${{env.APEX_TESTS}} --concise
 
             # # If the env variable equals all, we run all tests
-            # # sfdx force:source:deploy -p force-app --checkonly --testlevel RunLocalTests  --json
-            # - name: 'Check-only deploy delta changes - run all tests'
-            #   if: ${{ env.APEX_TESTS == 'all' }}
-            #   run: |
-            #       sf project deploy validate -d force-app --manifest --test-level RunLocalTests
+            # sfdx force:source:deploy -p force-app --checkonly --testlevel RunLocalTests  --json
+            - name: 'Check-only deploy delta changes - run all tests'
+              if: ${{ env.APEX_TESTS == 'all' }}
+              run: |
+                  sf project deploy validate --manifest "manifest/package.xml" -l RunLocalTests --concise
 
