@@ -157,19 +157,20 @@ jobs:
 
             # The .sarif file can later be uploaded to github, so that we can see the 
             # results of the scan directly from the PR.
+                  # sfdx scanner:run --format sarif --target './**/*.cls' --category "Design,Best Practices,Performance" --outfile 'apexScanResults.sarif'  
 
             - name: 'Scan code'
               run: |
                   cd force-app
-                  sfdx scanner:run --format sarif --target './**/*.cls' --category "Design,Best Practices,Performance" --outfile 'apexScanResults.sarif'  
+                  sfdx scanner:run --format sarif --target './**/*.cls' --category "Design,Best Practices,Performance" -f junit  
                   cd ..
                   echo came back to root directory
 
             # Now we upload the .sarif file as explained in the previous step
-            - name: Upload SARIF file
-              uses: github/codeql-action/upload-sarif@v3
-              with:
-                sarif_file: force-app/apexScanResults.sarif
+            # - name: Upload SARIF file
+            #   uses: github/codeql-action/upload-sarif@v3
+            #   with:
+            #     sarif_file: force-app/apexScanResults.sarif
 
             # We do a check-only deploy and we only run the tests specified in the PR
             # If the env variable does not equal 'all', we know that there is a list of
