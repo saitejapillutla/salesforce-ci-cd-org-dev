@@ -201,7 +201,7 @@ jobs:
               run: |
                   echo Tests that are about to Run during validation are :: ${{env.APEX_TESTS}}
                   JOBID=$(sfdx force:source:deploy --manifest "manifest/package.xml" --postdestructivechanges "manifest/destructiveChangesPost.xml" -c -l RunSpecifiedTests --runtests ${{ env.APEX_TESTS }} --json | jq -r '.result.id')
-                  echo "SFDX_JobID=$JOBID" >> job_id.txt
+                  echo "$JOBID" > job_id.txt
                   sfdx force:mdapi:deploy:report -i $JOBID --verbose
                   
               # sf project deploy validate --manifest "manifest/package.xml" --postdestructivechanges "manifest/destructiveChangesPost.xml" -l RunSpecifiedTests -t ${{env.APEX_TESTS}} --verbose
@@ -216,7 +216,7 @@ jobs:
               run: |
                   echo Tests that are about to Run during validation are :: ${{env.APEX_TESTS}}
                   JOBID=$(sfdx force:source:deploy --manifest "manifest/package.xml" --postdestructivechanges "manifest/destructiveChangesPost.xml" -c -l NoTestRun --json | jq -r '.result.id')
-                  echo "SFDX_JobID=$JOBID" >> job_id.txt
+                  echo "$JOBID" > job_id.txt
                   sfdx force:mdapi:deploy:report -i $JOBID --verbose
             #       fi
             - name: Set Git identity
