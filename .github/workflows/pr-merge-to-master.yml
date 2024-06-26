@@ -40,12 +40,13 @@ jobs:
         run: |
             git pull
             value=$(cat job_id.txt)
+            echo "JobID=$value" >> $GITHUB_ENV
             echo ::set-output name=job-id::$value
             echo The result is $value
       - name: Deploy
         shell: bash
         run: |
-            echo "Deploying with job ID: ${needs.get-job-id.outputs.job-id}"
+            echo "Deploying with job ID: ${env.JobID}"
 
 
 
