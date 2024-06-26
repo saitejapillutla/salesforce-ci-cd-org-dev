@@ -5,6 +5,8 @@ public with sharing class UltimateClassTests {
     public static void testMyCode(){
         UltimateClass a = new UltimateClass();
         System.assert(true);
+
+        
     }
 
 
