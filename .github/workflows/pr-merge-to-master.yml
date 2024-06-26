@@ -15,36 +15,54 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: 'Install Salesforce CLI'
+      - name: Download job ID artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: job_id
+      - name: Deploy
         run: |
-            wget https://developer.salesforce.com/media/salesforce-cli/sfdx/channels/stable/sfdx-linux-x64.tar.xz
-            mkdir ~/sfdx
-            tar xJf sfdx-linux-x64.tar.xz -C ~/sfdx --strip-components 1
-            echo "$HOME/sfdx/bin" >> $GITHUB_PATH
-            ~/sfdx/bin/sfdx version
+            echo "Deploying with job ID: $(cat job_id)"
 
-      - name: 'Installing java'
+      # verify if  $(cat job_id) is null or not and print output
+      - name: Verify job ID
         run: |
-          sudo apt-get update
-          sudo apt install default-jdk
+          if [ -z "${{ needs.initial-setup.outputs.job_id }}" ]; then
+            echo "Job ID is null"
+          else
+            echo "Job ID is not null"
+          fi
 
-      - name: 'Populate auth file with SFDX_URL secret of integration org'
-        shell: bash
-        run: |
-             echo ${{ secrets.SFDX_INTEGRATION_URL}} > ./SFDX_INTEGRATION_URL.txt
-        # Authenticate to org using the URL stored in the text file
-      - name: 'Authenticate to Integration Org'
-        run: |
-             sfdx auth:sfdxurl:store -f ./SFDX_INTEGRATION_URL.txt -s -a integration
-             echo NEW DEPLYMENT ID ${{ needs.validate-deployment-on-develop-org.outputs.SFDX_JobID }}
-             echo APEX TESTS ${{env.APEX_TESTS}}
 
-  quick-deploy:
-    runs-on: ubuntu-latest
-    needs: initial-setup
-    if: needs.validate-deployment-on-develop-org.outputs.SFDX_JobID != ''
-    steps:
-      - name: 'Quick Deploy'
-        run: |
-          sfdx force:source:quickdeploy -i ${{ needs.validate-deployment-on-develop-org.outputs.SFDX_JobID }} --verbose
+  #     - name: 'Install Salesforce CLI'
+  #       run: |
+  #           wget https://developer.salesforce.com/media/salesforce-cli/sfdx/channels/stable/sfdx-linux-x64.tar.xz
+  #           mkdir ~/sfdx
+  #           tar xJf sfdx-linux-x64.tar.xz -C ~/sfdx --strip-components 1
+  #           echo "$HOME/sfdx/bin" >> $GITHUB_PATH
+  #           ~/sfdx/bin/sfdx version
+
+  #     - name: 'Installing java'
+  #       run: |
+  #         sudo apt-get update
+  #         sudo apt install default-jdk
+
+  #     - name: 'Populate auth file with SFDX_URL secret of integration org'
+  #       shell: bash
+  #       run: |
+  #            echo ${{ secrets.SFDX_INTEGRATION_URL}} > ./SFDX_INTEGRATION_URL.txt
+  #       # Authenticate to org using the URL stored in the text file
+  #     - name: 'Authenticate to Integration Org'
+  #       run: |
+  #            sfdx auth:sfdxurl:store -f ./SFDX_INTEGRATION_URL.txt -s -a integration
+  #            echo NEW DEPLYMENT ID ${{ needs.validate-deployment-on-develop-org.outputs.SFDX_JobID }}
+  #            echo APEX TESTS ${{env.APEX_TESTS}}
+
+  # quick-deploy:
+  #   runs-on: ubuntu-latest
+  #   needs: initial-setup
+  #   if: needs.validate-deployment-on-develop-org.outputs.SFDX_JobID != ''
+  #   steps:
+  #     - name: 'Quick Deploy'
+  #       run: |
+  #         sfdx force:source:quickdeploy -i ${{ needs.validate-deployment-on-develop-org.outputs.SFDX_JobID }} --verbose
 
