@@ -219,9 +219,6 @@ jobs:
                   echo "SFDX_JobID=$JOBID" >> job_id.txt
                   sfdx force:mdapi:deploy:report -i $JOBID --verbose
             #       fi
-            - name: Commit and push job ID file
-              uses: actions/checkout@v2
-
             - name: Commit job ID file
               run: |
                 git add job_id.txt
