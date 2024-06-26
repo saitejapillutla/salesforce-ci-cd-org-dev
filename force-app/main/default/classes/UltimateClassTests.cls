@@ -7,4 +7,7 @@ public with sharing class UltimateClassTests {
         System.assert(true);
     }
 
+
+    
+
 }
