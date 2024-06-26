@@ -35,13 +35,15 @@ jobs:
 
       - name: 'Download job ID artifact'
         uses: actions/download-artifact@v4
-        with:
-          name: job_id
+      - name: Get job ID file
+        run: |
+            git pull
+            value=$(cat job_id.txt)
+            echo The result is $value
       - name: Deploy
         shell: bash
         run: |
-            value = `cat job_id.txt`
-            echo The result is $value
+            echo "Deploying with job ID: $value"
 
 
 
