@@ -4,9 +4,7 @@ name: Quick Deploy using Job ID
 # Definition when the workflow should run
 on:
   push:
-    branches:
-      - CICD-Saiteja-DoNotUse
-      - CICD-Packaging-DoNotUse
+    branches: [ devolopment ]
 
 jobs:
   initial-setup:
