@@ -62,6 +62,20 @@ jobs:
           sudo apt-get update
           sudo apt install default-jdk
 
+
+      - name: 'Populate auth file with SFDX_URL secret of integration org'
+        shell: bash
+        run: |
+             echo ${{ secrets.SFDX_INTEGRATION_URL}} > ./SFDX_INTEGRATION_URL.txt
+
+            # Authenticate to org using the URL stored in the text file
+      - name: 'Authenticate to Integration Org'
+        run: sfdx auth:sfdxurl:store -f ./SFDX_INTEGRATION_URL.txt -s -a integration
+
+
+
+
+
       - name: 'Quick Deploy starting'      
         run: |
             sfdx force:source:deploy -q ${{env.JobID}} --verbose
