@@ -219,6 +219,10 @@ jobs:
                   echo "SFDX_JobID=$JOBID" >> job_id.txt
                   sfdx force:mdapi:deploy:report -i $JOBID --verbose
             #       fi
+            - name: Set Git identity
+              run: |
+                  git config --global user.email "github-actions-bot@github.com"
+                  git config --global user.name "GitHub Actions"
             - name: Commit job ID file
               run: |
                 git add job_id.txt
