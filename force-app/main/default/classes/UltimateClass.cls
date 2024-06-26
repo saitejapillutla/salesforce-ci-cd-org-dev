@@ -11,6 +11,6 @@ public with sharing class UltimateClass {
 
 
 
-        
+
     }
 }
