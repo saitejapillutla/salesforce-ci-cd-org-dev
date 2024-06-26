@@ -31,9 +31,17 @@ jobs:
         if: ${{ github.actor != 'dependabot[bot]' }}
         steps:
             # Now we install nodejs in the VM, and specify version 14
-            - uses: actions/setup-node@v3
+            - uses: actions/setup-node@v4
               with:
-                node-version: '20'
+                node-version: 20
+
+            
+            - name: 'Ignore engines from yarn'
+              run: |
+                   echo "Ignore engines"
+                   yarn config set ignore-engines true 
+                  
+
 
             # The idea is that the VM can access your remote repository
             # because your repository is an sfdx project.
@@ -48,10 +56,15 @@ jobs:
             # to the destination org
 
             - name: 'Checkout source code'
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
               with:
                 fetch-depth: 0
             
+            # Install java as it is required for the next step
+            - name: 'Installing java'
+              run: |
+                sudo apt-get update
+                sudo apt install default-jdk
             # Now, we need a way to let the developer specify which tests to run, which
             # could be all tests or just the tests relevant to their deployment.
 
@@ -97,7 +110,6 @@ jobs:
                   tar xJf sfdx-linux-x64.tar.xz -C ~/sfdx --strip-components 1
                   echo "$HOME/sfdx/bin" >> $GITHUB_PATH
                   ~/sfdx/bin/sfdx version
-
             # Then we install the SFDX-Git-Delta plugin - https://github.com/scolladon/sfdx-git-delta
             # This is an awesome plugin that allows us to extract a package.xml with the metadata
             # that has changed between commits. I highly recommend going over the github readme 
@@ -108,12 +120,11 @@ jobs:
             #       echo y | sfdx plugins:install sfdx-git-delta
             #       sfdx plugins 
 
+            
             # Install java as it is required for the next step
-            - name: 'Installing java'
-              run: |
-                sudo apt-get update
-                sudo apt install default-jdk
+            
 
+                
             # Prior to setting up this workflow, you have to create a Github Secret
             # that contains the sfdx url of the integration/qa org.
 
@@ -157,15 +168,19 @@ jobs:
 
             # Install SFDX scanner
             - name: 'Installing SFDX scanner'
-              run: sf plugins install @salesforce/sfdx-scanner
+              run: |
+                  sf plugins install @salesforce/sfdx-scanner@v4.2.0
+            # sf plugins install @salesforce/sfdx-scanner
 
             - name: 'Scan code'
               run: |
                   cd force-app
-                  sf scanner run --format sarif --target './**/*.cls' --category "Design,Best Practices,Performance" junit  
+                  sf scanner run -f table --target './**/*.cls' --category "Design,Best Practices,Performance"
                   cd ..
                   echo came back to root directory
 
+            # Add --severity-threshold 3 tag at the end of the Scanner command  to throw a non-zero exit code when rule violations of a specific normalized severity or greater are found. 
+            # When there are rule violations with moderate (2) or high (1) severity, the exit code equals the severity of the most severe violation.
             # Now we upload the .sarif file as explained in the previous step
             # - name: Upload SARIF file
             #   uses: github/codeql-action/upload-sarif@v3
@@ -180,6 +195,7 @@ jobs:
             # We do a check-only deploy and we only run the tests specified in the PR
             # If the env variable does not equal 'all', we know that there is a list of
             # tests that can be run
+            # sfdx force:source:deploy --manifest "manifest/package.xml" --postdestructivechanges "manifest/destructiveChangesPost.xml" -c -l RunSpecifiedTests --runtests ${{env.APEX_TESTS}} --verbose
             - name: 'Check-only deploy delta changes - run specified tests'
               if: ${{ env.APEX_TESTS != 'all' }}
               run: |
@@ -187,17 +203,19 @@ jobs:
                   JOBID=$(sfdx force:source:deploy --manifest "manifest/package.xml" --postdestructivechanges "manifest/destructiveChangesPost.xml" -c -l RunSpecifiedTests --runtests ${{ env.APEX_TESTS }} --json | jq -r '.result.id')
                   echo "SFDX_JobID=$JOBID" >> $GITHUB_ENV
                   sfdx force:mdapi:deploy:report -i $JOBID --verbose
-              
                   
               # sf project deploy validate --manifest "manifest/package.xml" --postdestructivechanges "manifest/destructiveChangesPost.xml" -l RunSpecifiedTests -t ${{env.APEX_TESTS}} --verbose
                   
             # sfdx force:source:deploy --manifest "manifest/package.xml" --postdestructivechanges "manifest/destructiveChangesPost.xml" -c -l RunSpecifiedTests --runtests ${{env.APEX_TESTS}} --verbose
                   
+              
+
             # # If the env variable equals all, we run all tests
             - name: 'Check-only deploy delta changes - run all tests'
               if: ${{ env.APEX_TESTS == 'all' }}
               run: |
-                  sfdx force:source:deploy --manifest "manifest/package.xml" --postdestructivechanges "manifest/destructiveChangesPost.xml" -c -l NoTestRun --verbose
-
+                  echo Tests that are about to Run during validation are :: ${{env.APEX_TESTS}}
+                  JOBID=$(sfdx force:source:deploy --manifest "manifest/package.xml" --postdestructivechanges "manifest/destructiveChangesPost.xml" -c -l NoTestRun --json | jq -r '.result.id')
+                  echo "SFDX_JobID=$JOBID" >> $GITHUB_ENV
+                  sfdx force:mdapi:deploy:report -i $JOBID --verbose
             #       fi
-
