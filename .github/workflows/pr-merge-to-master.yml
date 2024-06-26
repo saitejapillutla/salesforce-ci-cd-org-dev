@@ -2,18 +2,12 @@
 name: Quick Deploy using Job ID
 
 # Definition when the workflow should run
-on:
-  workflow_run:
-    workflows: ["Validate PR on develop branch"]
-    types: 
-      - completed
-    branches: [ devolopment ]
+
   push:
     branches: [ devolopment ]
 
 jobs:
   initial-setup:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - name: 'Checkout source code'
@@ -31,14 +25,6 @@ jobs:
             value = `cat job_id.txt`
             echo The result is $value
 
-      # verify if  $(cat job_id) is null or not and print output
-      - name: Verify job ID
-        run: |
-          if [ -z "${{ needs.initial-setup.outputs.job_id }}" ]; then
-            echo "Job ID is null"
-          else
-            echo "Job ID is not null"
-          fi
 
 
   #     - name: 'Install Salesforce CLI'
