@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 'Checkout source code'
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -34,7 +34,9 @@ jobs:
              echo ${{ secrets.SFDX_INTEGRATION_URL}} > ./SFDX_INTEGRATION_URL.txt
         # Authenticate to org using the URL stored in the text file
       - name: 'Authenticate to Integration Org'
-        run: sfdx auth:sfdxurl:store -f ./SFDX_INTEGRATION_URL.txt -s -a integration
+        run: |
+             sfdx auth:sfdxurl:store -f ./SFDX_INTEGRATION_URL.txt -s -a integration
+             echo NEW DEPLYMENT ID ${{ needs.validate-deployment-on-develop-org.outputs.SFDX_JobID }}
 
   quick-deploy:
     runs-on: ubuntu-latest

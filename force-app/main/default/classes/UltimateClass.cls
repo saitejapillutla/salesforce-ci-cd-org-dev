@@ -8,6 +8,8 @@ public with sharing class UltimateClass {
         }
         System.debug('Value of '+ a);
         System.debug('Value of '+ b);
+
+        
         
     }
 }
