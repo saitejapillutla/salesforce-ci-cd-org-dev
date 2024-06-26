@@ -16,11 +16,23 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Get job ID file
+        run: |
+            git pull origin
+            value=$(cat job_id.txt)
+            echo The result is $value
 
+      - name: Deploy
+        shell: bash
+        run: |
+             echo "Deploying with job ID: $value"
+             
       - name: 'Check aartifact'
         run: echo Checkout source code
 
-        
+
+
+
       - name: 'Download job ID artifact'
         uses: actions/download-artifact@v4
         with:

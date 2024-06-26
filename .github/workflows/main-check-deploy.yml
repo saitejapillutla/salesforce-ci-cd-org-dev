@@ -219,8 +219,11 @@ jobs:
                   echo "SFDX_JobID=$JOBID" >> job_id.txt
                   sfdx force:mdapi:deploy:report -i $JOBID --verbose
             #       fi
-            - name: 'Storing job ID as artifact'
-              uses: actions/upload-artifact@v4
-              with:
-                name: job_id
-                path: job_id.txt
+            - name: Commit and push job ID file
+              uses: actions/checkout@v2
+
+            - name: Commit job ID file
+              run: |
+                git add job_id.txt
+                git commit -m "Add job ID file"
+                git push origin main
