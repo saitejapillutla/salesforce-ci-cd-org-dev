@@ -37,6 +37,7 @@ jobs:
         run: |
              sfdx auth:sfdxurl:store -f ./SFDX_INTEGRATION_URL.txt -s -a integration
              echo NEW DEPLYMENT ID ${{ needs.validate-deployment-on-develop-org.outputs.SFDX_JobID }}
+             echo APEX TESTS ${{env.APEX_TESTS}}
 
   quick-deploy:
     runs-on: ubuntu-latest
