@@ -36,6 +36,7 @@ jobs:
       - name: 'Download job ID artifact'
         uses: actions/download-artifact@v4
       - name: Get job ID file
+        id: get-job-id
         run: |
             git pull
             value=$(cat job_id.txt)
