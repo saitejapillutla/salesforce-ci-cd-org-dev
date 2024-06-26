@@ -225,7 +225,7 @@ jobs:
                   git config --global user.name "GitHub Actions"
             - name: Commit job ID file
               run: |
-                git checkout depotest
+                git checkout deplotest
                 git add job_id.txt
                 git commit -m "Add job ID file"
                 git push
