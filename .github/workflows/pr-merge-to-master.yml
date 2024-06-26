@@ -64,7 +64,7 @@ jobs:
 
       - name: 'Quick Deploy starting'      
         run: |
-            sfdx force:source:quickdeploy -i ${{env.JobID}} --verbose
+            sfdx force:source:deploy -q ${{env.JobID}} --verbose
 
   #     - name: 'Populate auth file with SFDX_URL secret of integration org'
   #       shell: bash
