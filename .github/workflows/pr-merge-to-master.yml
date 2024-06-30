@@ -79,7 +79,7 @@ jobs:
       - name: 'Quick Deploy starting'      
         run: |
             sfdx force:source:deploy -q ${{env.JobID}} --verbose
-            
+
       - name: Set Git identity
         run: |
              git config --global user.email "github-actions-bot@github.com"
@@ -90,7 +90,7 @@ jobs:
             cd force-app/main/default
             shopt -s extglob
             rm -rf !(.gitkeep)
-            git add.
+            git add  .
             git commit -m "Clean up post deployment"
             git push origin
 
