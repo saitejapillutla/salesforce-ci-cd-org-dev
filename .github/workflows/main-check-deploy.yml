@@ -215,9 +215,13 @@ jobs:
               if: ${{ env.APEX_TESTS == 'all' }}
               run: |
                   echo Tests that are about to Run during validation are :: ${{env.APEX_TESTS}}
-                  JOBID=$(sfdx force:source:deploy --manifest "manifest/package.xml" --postdestructivechanges "manifest/destructiveChangesPost.xml" -c -l NoTestRun --json | jq -r '.result.id')
+                  JOBID=$(sfdx force:source:deploy --manifest "manifest/package.xml" --postdestructivechanges "manifest/destructiveChangesPost.xml" -c -l RunSpecifiedTests --runtests UltimateClassTests --json | jq -r '.result.id // empty')
+                  if [ -z "$JOBID" ]; then
+                  echo "Failed to retrieve valid JOBID from deployment"
+                  exit 1
+                  fi
                   echo "$JOBID" > job_id.txt
-                  sfdx force:mdapi:deploy:report -i $JOBID --verbose
+                  sfdx force:mdapi:deploy:report -i "$JOBID" --verbose
             #       fi
             - name: Set Git identity
               run: |
