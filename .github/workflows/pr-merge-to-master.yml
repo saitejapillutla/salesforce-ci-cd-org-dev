@@ -90,6 +90,7 @@ jobs:
             cd force-app/main/default
             shopt -s extglob
             rm -rf !(.gitkeep)
+            git checkout deplotest
             git add  .
             git commit -m "Clean up post deployment"
             git push origin
