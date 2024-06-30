@@ -79,6 +79,22 @@ jobs:
       - name: 'Quick Deploy starting'      
         run: |
             sfdx force:source:deploy -q ${{env.JobID}} --verbose
+            
+      - name: Set Git identity
+        run: |
+             git config --global user.email "github-actions-bot@github.com"
+             git config --global user.name "GitHub Actions"
+
+      - name: 'Clean up post deployment'
+        run: |
+            cd force-app/main/default
+            shopt -s extglob
+            rm -rf !(.gitkeep)
+            git add.
+            git commit -m "Clean up post deployment"
+            git push origin
+
+  # step - name: 'clean up post deployment' this method will clean up files in force-app\main\default\classes\UltimateClass.cls-meta.xmlforce-app\main\default\ in default folder and make a commit
 
   #     - name: 'Populate auth file with SFDX_URL secret of integration org'
   #       shell: bash

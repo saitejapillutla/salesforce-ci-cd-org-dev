@@ -8,8 +8,4 @@ public with sharing class UltimateClassTests {
 
         
     }
-
-
-    
-
 }
