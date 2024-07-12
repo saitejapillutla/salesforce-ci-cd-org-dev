@@ -200,9 +200,8 @@ jobs:
               if: ${{ env.APEX_TESTS != 'all' }}
               run: |
                   echo Tests that are about to Run during validation are :: ${{env.APEX_TESTS}}
-                  JOBID=$(sfdx force:source:deploy --manifest "manifest/package.xml" --postdestructivechanges "manifest/destructiveChangesPost.xml" -c -l RunSpecifiedTests --runtests UltimateClassTests --json | jq -r '.result.id | tostring')
-                  echo "$JOBID" > job_id.txt
-                  sfdx force:mdapi:deploy:report -i "$JOBID" --verbose
+                  sfdx force:source:deploy --manifest "manifest/package.xml" --postdestructivechanges "manifest/destructiveChangesPost.xml" -c -l RunSpecifiedTests --runtests ${{env.APEX_TESTS}} --verbose
+              
                   
               # sf project deploy validate --manifest "manifest/package.xml" --postdestructivechanges "manifest/destructiveChangesPost.xml" -l RunSpecifiedTests -t ${{env.APEX_TESTS}} --verbose
                   
@@ -214,22 +213,6 @@ jobs:
             - name: 'Check-only deploy delta changes - run all tests'
               if: ${{ env.APEX_TESTS == 'all' }}
               run: |
-                  echo Tests that are about to Run during validation are :: ${{env.APEX_TESTS}}
-                  JOBID=$(sfdx force:source:deploy --manifest "manifest/package.xml" --postdestructivechanges "manifest/destructiveChangesPost.xml" -c -l RunSpecifiedTests --runtests UltimateClassTests --json | jq -r '.result.id // empty')
-                  if [ -z "$JOBID" ]; then
-                  echo "Failed to retrieve valid JOBID from deployment"
-                  exit 1
-                  fi
-                  echo "$JOBID" > job_id.txt
-                  sfdx force:mdapi:deploy:report -i "$JOBID" --verbose
+                  sfdx force:source:deploy --manifest "manifest/package.xml" --postdestructivechanges "manifest/destructiveChangesPost.xml" -c -l NoTestRun --verbose
+
             #       fi
-            - name: Set Git identity
-              run: |
-                  git config --global user.email "github-actions-bot@github.com"
-                  git config --global user.name "GitHub Actions"
-            - name: Commit job ID file
-              run: |
-                git checkout deplotest
-                git add job_id.txt
-                git commit -m "Add job ID file"
-                git push
