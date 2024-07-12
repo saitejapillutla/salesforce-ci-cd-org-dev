@@ -16,39 +16,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Get job ID file
-        run: |
-            git pull origin
-            value=$(cat job_id.txt)
-            echo The result is $value
-
-      - name: Deploy
-        shell: bash
-        run: |
-             echo "Deploying with job ID: $value"
-             
-      - name: 'Check aartifact'
-        run: echo Checkout source code
-
-
-
-
-      - name: 'Download job ID artifact'
-        uses: actions/download-artifact@v4
-      - name: Get job ID file
-        id: get-job-id
-        run: |
-            git pull
-            value=$(cat job_id.txt)
-            echo "JobID=$value" >> $GITHUB_ENV
-            echo The result is $value
-      - name: Deploy
-        shell: bash
-        run: |
-            echo "Deploying with job ID: ${{env.JobID}}"
-
-
-
       - name: 'Install Salesforce CLI'
         run: |
             wget https://developer.salesforce.com/media/salesforce-cli/sfdx/channels/stable/sfdx-linux-x64.tar.xz
@@ -62,6 +29,17 @@ jobs:
           sudo apt-get update
           sudo apt install default-jdk
 
+      - name: 'Read PR Body'
+              env:
+                # The pull request body is available through the github context object
+                # we put the body of the pull request in an env variable (only available to this step)
+                PR_BODY: ${{github.event.pull_request.body}}
+
+      run: |
+                  echo $PR_BODY > ./pr_body.txt
+                  node ./parsePR.js              
+                  TESTS=$(cat testsToRun.txt)       
+                  echo "APEX_TESTS=$TESTS" >> $GITHUB_ENV
 
       - name: 'Populate auth file with SFDX_URL secret of integration org'
         shell: bash
@@ -73,12 +51,19 @@ jobs:
         run: sfdx auth:sfdxurl:store -f ./SFDX_INTEGRATION_URL.txt -s -a integration
 
 
+      - name: 'Deploy Delta changes - Run specified tests'
+              if: ${{ env.APEX_TESTS != 'None' }}
+              run: |
+                  echo Tests that are about to Run during validation are :: ${{env.APEX_TESTS}}
+                  sfdx force:source:deploy --manifest "manifest/package.xml" --postdestructivechanges "manifest/destructiveChangesPost.xml" -l RunSpecifiedTests --runtests ${{env.APEX_TESTS}} --verbose
+              
+      - name: 'Deploy Delta changes - Run No tests'
+              if: ${{ env.APEX_TESTS == 'None' }}
+              run: |
+                  sfdx force:source:deploy --manifest "manifest/package.xml" --postdestructivechanges "manifest/destructiveChangesPost.xml" -c -l NoTestRun --verbose   
 
+# step - name: 'clean up post deployment' this method will clean up files in force-app\main\default\classes\UltimateClass.cls-meta.xmlforce-app\main\default\ in default folder and make a commit
 
-
-      - name: 'Quick Deploy starting'      
-        run: |
-            sfdx force:source:deploy -q ${{env.JobID}} --verbose
 
       - name: Set Git identity
         run: |
@@ -90,30 +75,8 @@ jobs:
             cd force-app/main/default
             shopt -s extglob
             rm -rf !(.gitkeep)
-            git checkout deplotest
+            git checkout CICD_WS_Template_DoNotUse
             git add  .
-            git commit -m "Clean up post deployment"
-            git push origin
-
-  # step - name: 'clean up post deployment' this method will clean up files in force-app\main\default\classes\UltimateClass.cls-meta.xmlforce-app\main\default\ in default folder and make a commit
-
-  #     - name: 'Populate auth file with SFDX_URL secret of integration org'
-  #       shell: bash
-  #       run: |
-  #            echo ${{ secrets.SFDX_INTEGRATION_URL}} > ./SFDX_INTEGRATION_URL.txt
-  #       # Authenticate to org using the URL stored in the text file
-  #     - name: 'Authenticate to Integration Org'
-  #       run: |
-  #            sfdx auth:sfdxurl:store -f ./SFDX_INTEGRATION_URL.txt -s -a integration
-  #            echo NEW DEPLYMENT ID ${{ needs.validate-deployment-on-develop-org.outputs.SFDX_JobID }}
-  #            echo APEX TESTS ${{env.APEX_TESTS}}
-
-  # quick-deploy:
-  #   runs-on: ubuntu-latest
-  #   needs: initial-setup
-  #   if: needs.validate-deployment-on-develop-org.outputs.SFDX_JobID != ''
-  #   steps:
-  #     - name: 'Quick Deploy'
-  #       run: |
-  #         sfdx force:source:quickdeploy -i ${{ needs.validate-deployment-on-develop-org.outputs.SFDX_JobID }} --verbose
+            git commit -m "BOT: Clean up post deployment"
+            git push
 
