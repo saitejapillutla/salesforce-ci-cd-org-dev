@@ -101,7 +101,22 @@ jobs:
                   node ./parsePR.js              
                   TESTS=$(cat testsToRun.txt)       
                   echo "APEX_TESTS=$TESTS" >> $GITHUB_ENV
-                  
+
+             - name: 'Read PR Body'
+              env:
+                PR_BODY: ${{github.event.head_commit.message}}
+              run: |
+                if [[ "${{ github.event.head_commit.message }}" =~ "None" ]]; then
+                  TESTS="None"
+                elif [[ "${{ github.event.head_commit.message }}" =~ Apex::\[.+?\]::Apex ]]; then
+                  TESTS=$(echo "${{ github.event.head_commit.message }}" | grep -oP '(?<=Apex::\[).+?(?=\]::Apex)')
+                else
+                  TESTS=""
+                fi
+                echo "APEX_TESTS=$TESTS" >> $GITHUB_ENV
+
+
+
             # Now Install Salesforce CLI
             - name: 'Install Salesforce CLI'
               run: |
